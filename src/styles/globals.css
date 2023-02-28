@@ -1,0 +1,24 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  left: 0;
+}
+
+input::-webkit-datetime-edit {
+  position: relative;
+  left: 2px;
+}
+
+input::-webkit-datetime-edit-fields-wrapper {
+  position: relative;
+  left: 2px;
+}
+
+::-webkit-calendar-picker-indicator {
+  margin-left: 8px;
+  opacity: 0.55;
+  background-image: url(https://cdn3.iconfinder.com/data/icons/linecons-free-vector-icons-pack/32/calendar-16.png) center/80% no-repeat;
+}
