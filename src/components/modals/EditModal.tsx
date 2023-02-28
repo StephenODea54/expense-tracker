@@ -24,7 +24,6 @@ export const EditModal = () => {
   
   const [inputs, setInputs] = useState({
     name: "",
-    imageUrl: "",
     dueDate: "",
     amount: 0,
     isPaid: false,
@@ -34,13 +33,12 @@ export const EditModal = () => {
   useEffect(() => {
     setInputs({
       name: data?.name ?? "",
-      imageUrl: data?.image_url ?? "",
       dueDate: data?.dueDate.toLocaleString() ?? "",
       amount: data?.amount ?? 0,
       isPaid: data?.isPaid ?? false,
       remainingBalance: data?.remainingBalance ?? 0,
     })
-  }, [data?.amount, data?.dueDate, data?.image_url, data?.isPaid, data?.name, data?.remainingBalance])
+  }, [data?.amount, data?.dueDate, data?.isPaid, data?.name, data?.remainingBalance])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -60,7 +58,6 @@ export const EditModal = () => {
 
     const resettedInputs = {
       name: "",
-      imageUrl: "",
       dueDate: "",
       amount: 0,
       isPaid: false,

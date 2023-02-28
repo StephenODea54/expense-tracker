@@ -5,7 +5,6 @@
  *
  * We also create a few inference helpers for input and output types
  */
-import { useQuery } from "@tanstack/react-query";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";

@@ -19,7 +19,6 @@ model Example {
 model Expenses {
     id               String   @id @default(cuid())
     name             String
-    image_url        String
     amount           Float
     dueDate          DateTime
     isPaid           Boolean

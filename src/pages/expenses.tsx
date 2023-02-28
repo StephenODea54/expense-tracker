@@ -31,7 +31,7 @@ const determinePaidStatus = (isPaid: boolean): string => {
   }
 };
 
-export default function expenses() {
+export default function Expenses() {
   const { isLoading, isError, data } = api.expenses.getAll.useQuery();
   const setExpenseId = useExpenseIdStore((state) => state.setId);
   const selectedDate = useDateFilterStore((state) => state.date);
