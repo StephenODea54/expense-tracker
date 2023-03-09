@@ -1,7 +1,9 @@
 import { Layout } from "../components/Layout";
-import { ArrowTrendingUpIcon } from "@heroicons/react/24/outline";
-import { ArrowTrendingDownIcon } from "@heroicons/react/24/outline";
-import { HomeModernIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowTrendingUpIcon,
+  ArrowTrendingDownIcon,
+  HomeModernIcon,
+} from "@heroicons/react/24/outline";
 
 import { api } from "../utils/api";
 import { add, format, isBefore, isAfter } from "date-fns";
@@ -9,9 +11,6 @@ import { currencyFormatter } from "../utils/currencyFormatter";
 
 const Home = () => {
   const { isLoading, isError, data } = api.expenses.getAll.useQuery();
-
-  if (isLoading) return <div>Loading...</div>
-  if (isError) return <div>Error... go yell at your husband.</div>
 
   const today = format(new Date(), "LLLL yyyy");
   
@@ -21,94 +20,56 @@ const Home = () => {
 
   const totalIncome = 7560;
 
+  const totalExpenses = dateFilter && currencyFormatter.format(dateFilter.reduce((acc, curVal) => (
+    acc + curVal.amount
+  ), 0));
+
+  const firstHalfSurplus = dateFilter && currencyFormatter.format(totalIncome/2 - dateFilter?.filter(expense => isBefore(expense.dueDate, add(new Date(today), { days: 14 })))
+  .reduce((acc, accVal) => (
+    acc + accVal.amount
+  ), 0));
+
+  const secondHalfSurplus = dateFilter && currencyFormatter.format(totalIncome/2 - dateFilter.filter(expense => isAfter(expense.dueDate, add(new Date(today), { days: 14 })))
+  .reduce((acc, accVal) => (
+    acc + accVal.amount
+  ), 0));
+
+  const cards = [
+    { name: "Total Income", icon: ArrowTrendingUpIcon, amount: currencyFormatter.format(totalIncome) },
+    { name: "Total Expenses", icon: ArrowTrendingDownIcon, amount: totalExpenses },
+    { name: "Estimated First Half Surplus", icon: HomeModernIcon, amount: firstHalfSurplus },
+    { name: "Estimated Second Half Surplus", icon: HomeModernIcon, amount: secondHalfSurplus },
+  ];
+
+  if (isLoading) return <div>Loading...</div>
+  if (isError) return <div>Error... go yell at your husband.</div>
+
   return (
     <Layout>
-      <div className="py-6 px-4">
-      <h2 className="font-semibold text-3xl text-slate-900">Summary for {today}</h2>
-        <div className="grid grid-cols-4 gap-x-8 mt-4">
-          <div className="shadow-lg rounded-sm border border-gray-300 bg-white py-6 px-7 w-full">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-[#F0F2F6]">
-              <ArrowTrendingUpIcon
-                color={"#3E50E0"}
-                width={16}
-                height={16}
-              />
-            </div>
-            <div className="flex items-end justify-between mt-4">
-              <div>
-                <h4 className="font-bold text-xl text-slate-900">
-                  {currencyFormatter.format(totalIncome)}
-                </h4>
-                <span className="font-medium text-sm text-[#64758B]">
-                  Total Income
-                </span>
+      <div className="mt-8">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 className="text-lg font-medium leading-6 text-gray-900">Overview</h2>
+          <div className="mt-2 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            {/* Card */}
+            {cards.map((card) => (
+              <div key={card.name} className="overflow-hidden rounded-lg bg-white shadow">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <card.icon className="h-6 w-6 text-gray-400" aria-hidden="true" />
+                    </div>
+                    <div className="ml-5 w-0 flex-1">
+                      <dl>
+                        <dt className="truncate text-sm font-medium text-gray-500">{card.name}</dt>
+                        <dd>
+                          <div className="text-lg font-medium text-gray-900">{card.amount}</div>
+                        </dd>
+                      </dl>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="shadow-lg rounded-sm border border-gray-300 bg-white py-6 px-7 w-full">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-[#F0F2F6]">
-              <ArrowTrendingDownIcon
-                color={"#3E50E0"}
-                width={16}
-                height={16}
-              />
-            </div>
-            <div className="flex items-end justify-between mt-4">
-              <div>
-                <h4 className="font-bold text-xl text-slate-900">
-                  {dateFilter && currencyFormatter.format(dateFilter.reduce((acc, curVal) => (
-                    acc + curVal.amount
-                  ), 0))}
-                </h4>
-                <span className="font-medium text-sm text-[#64758B]">
-                  Total Expenses
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="shadow-lg rounded-sm border border-gray-300 bg-white py-6 px-7 w-full">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-[#F0F2F6]">
-              <HomeModernIcon
-                color={"#3E50E0"}
-                width={16}
-                height={16}
-              />
-            </div>
-            <div className="flex items-end justify-between mt-4">
-              <div>
-                <h4 className="font-bold text-xl text-slate-900">
-                  {dateFilter && currencyFormatter.format(totalIncome/2 - dateFilter?.filter(expense => isBefore(expense.dueDate, add(new Date(today), { days: 14 })))
-                    .reduce((acc, accVal) => (
-                      acc + accVal.amount
-                    ), 0))}
-                </h4>
-                <span className="font-medium text-sm text-[#64758B]">
-                  Estimated First Half Surplus
-                </span>
-              </div>
-            </div>
-          </div>
-          <div className="shadow-lg rounded-sm border border-gray-300 bg-white py-6 px-7 w-full">
-            <div className="flex items-center justify-center w-11 h-11 rounded-full bg-[#F0F2F6]">
-              <HomeModernIcon
-                color={"#3E50E0"}
-                width={16}
-                height={16}
-              />
-            </div>
-            <div className="flex items-end justify-between mt-4">
-              <div>
-                <h4 className="font-bold text-xl text-slate-900">
-                  {dateFilter && currencyFormatter.format(totalIncome/2 - dateFilter.filter(expense => isAfter(expense.dueDate, add(new Date(today), { days: 14 })))
-                    .reduce((acc, accVal) => (
-                      acc + accVal.amount
-                    ), 0))}
-                </h4>
-                <span className="font-medium text-sm text-[#64758B]">
-                  Estimated Second Half Surplus
-                </span>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
